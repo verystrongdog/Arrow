@@ -5,6 +5,8 @@ Arrow
 
 ***The Game Narrative Design Tool***
 
+简体中文界面在分支 `zh-cn`。首次启动语言是 `zh_CN`，可在偏好设置里改回英文。界面字体是 Noto Sans SC 的子集，常见汉字都能显示。
+
 [Download](#download) | [Integration](#runtime--integration) | [Web App](#web-app) | [Guides](#guides)
 
 Arrow is the free, open-source and feature-rich tool for

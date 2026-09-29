@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=48 format=3 uid="uid://7iui7va3jch8"]
+[gd_resource type="Theme" load_steps=49 format=3 uid="uid://7iui7va3jch8"]
+
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansSC-UI.ttf" id="cjk_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fxnj7"]
 content_margin_left = 18.0
@@ -577,6 +579,7 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [resource]
+default_font = ExtResource("cjk_font")
 BoxGap16/base_type = &"BoxContainer"
 BoxGap16/constants/separation = 16
 BoxGap8/base_type = &"BoxContainer"

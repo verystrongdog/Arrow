@@ -32,6 +32,10 @@ buses/default_bus_layout="res://assets/default_bus_layout.tres"
 
 window/stretch/aspect="ignore"
 
+[internationalization]
+
+locale/fallback="zh_CN"
+
 [input]
 
 arrow_save={
