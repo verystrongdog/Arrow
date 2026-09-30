@@ -200,13 +200,10 @@ func try_assisted_connection(outgoing:bool, first_side_slot:int, first_side_name
 
 func _on_connection_with_empty(node_name:String, slot:int, release_position:Vector2, outgoing:bool) -> void:
 	if try_assisted_connection(outgoing, slot, node_name) == false:
-		if _ALLOW_QUICK_NODE_INSERTION && outgoing:
-			_request_mind("quick_insert_node", {
-				"node": "dialog",
-				"offset": offset_from_position(release_position),
-				"connection": [node_name.to_int(), slot, true]
-			})
-		elif _ALLOW_QUICK_NODE_INSERTION:
+		if _ALLOW_QUICK_NODE_INSERTION:
+			# A port was dragged into empty space, so a new node is wanted here.
+			# Instead of assuming a type (previously always `dialog`), ask which one
+			# to insert, and connect it to the port the wire came from.
 			GridContextMenu.call_deferred(
 				"show_up",
 				release_position, offset_from_position(release_position),

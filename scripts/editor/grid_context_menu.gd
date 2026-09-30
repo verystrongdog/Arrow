@@ -110,6 +110,10 @@ func set_quick_insert_mode(target = null) -> void:
 		Control.CursorShape.CURSOR_POINTING_HAND if ( _QUICK_INSERT_MODE && Settings.QUICK_INSERT_NODES_ON_SINGLE_CLICK )
 		else Control.CursorShape.CURSOR_ARROW
 	)
+	# The set of insertable types depends on the direction of the connection we are about
+	# to make (a type that can't be connected that way would be inserted unconnected),
+	# so the listing shall be refreshed whenever the mode changes:
+	filter_node_insert_list_items_view()
 	pass
 
 func reset_quick_edit_buttons():
@@ -130,11 +134,23 @@ func reset_quick_edit_buttons():
 	pass
 
 func get_restricted_types() -> Array:
-	var restriction:Array
+	var restriction:Array = []
 	if Main.Mind.is_scene_macro():
-		restriction = Settings.NODE_TYPES_RESTRICTED_IN_MACROS
-	else:
-		restriction = []
+		restriction = Settings.NODE_TYPES_RESTRICTED_IN_MACROS.duplicate()
+	# In quick-insertion mode (a port was dragged into empty space) the new node is meant
+	# to be connected to that port. Some types can never be connected that way, so they are
+	# hidden instead of being inserted as a loose, unconnected node:
+	if (
+		_QUICK_INSERT_MODE && (_QUICK_INSERT_TARGET is Array) && _QUICK_INSERT_TARGET.size() == 3 &&
+		(_QUICK_INSERT_TARGET[2] is bool)
+	):
+		var direction_restriction:Array = (
+			Settings.INVALID_QUICK_CONNECTION.TO if _QUICK_INSERT_TARGET[2] == true
+			else Settings.INVALID_QUICK_CONNECTION.FROM
+		)
+		for restricted_type in direction_restriction:
+			if restriction.has(restricted_type) == false:
+				restriction.append(restricted_type)
 	return restriction
 
 # refreshes the list of available node types (modules)
