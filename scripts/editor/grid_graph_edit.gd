@@ -200,7 +200,13 @@ func try_assisted_connection(outgoing:bool, first_side_slot:int, first_side_name
 
 func _on_connection_with_empty(node_name:String, slot:int, release_position:Vector2, outgoing:bool) -> void:
 	if try_assisted_connection(outgoing, slot, node_name) == false:
-		if _ALLOW_QUICK_NODE_INSERTION:
+		if _ALLOW_QUICK_NODE_INSERTION && outgoing:
+			_request_mind("quick_insert_node", {
+				"node": "dialog",
+				"offset": offset_from_position(release_position),
+				"connection": [node_name.to_int(), slot, true]
+			})
+		elif _ALLOW_QUICK_NODE_INSERTION:
 			GridContextMenu.call_deferred(
 				"show_up",
 				release_position, offset_from_position(release_position),

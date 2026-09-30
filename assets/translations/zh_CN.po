@@ -918,6 +918,18 @@ msgstr "导入项目文件"
 msgid "Import File"
 msgstr "导入"
 
+msgid "Add Dialog"
+msgstr "加对话"
+
+msgid "Add Interaction"
+msgstr "加交互"
+
+msgid "Cannot Remove Entry"
+msgstr "入口留着"
+
+msgid "SCENE_ENTRY_CANNOT_BE_REMOVED"
+msgstr "这是这段的入口，不能删。播放从这里开始。从它右边的针脚拖到空白处，下一句会接上。底栏的「加对话」「加交互」也会接在它后面。"
+
 
 # -----------------------------------------------------
 # scripts/editor/panels/inspector_project_properties.gd

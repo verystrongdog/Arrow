@@ -26,6 +26,8 @@ signal request_mind()
 @onready var PlayFromLeftConsoleButton = $/root/Main/Editor/Top/Bar/Play/From/ShowConsole
 # bottom
 @onready var OpenSceneTitle = $/root/Main/Editor/Bottom/Bar/SceneTitle
+@onready var AddDialogButton = $/root/Main/Editor/Bottom/Bar/AddDialog
+@onready var AddInteractionButton = $/root/Main/Editor/Bottom/Bar/AddInteraction
 
 func _ready() -> void:
 	register_connections()
@@ -39,6 +41,8 @@ func register_connections() -> void:
 	PlayFromProjectEntryButton.pressed.connect(self._request_mind.bind("console_play_from", "project_entry"))
 	PlayFromLeftConsoleButton.pressed.connect(self._request_mind.bind("console_play_from", "left_console"))
 	PlayFromSelectedNodeButton.pressed.connect(self._request_mind.bind("console_play_from", "selected_node"))
+	AddDialogButton.pressed.connect(self._request_mind.bind("insert_connected_block", "dialog"))
+	AddInteractionButton.pressed.connect(self._request_mind.bind("insert_connected_block", "interaction"))
 	pass
 
 func set_project_title(title:String) -> void:

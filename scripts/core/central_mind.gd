@@ -176,6 +176,8 @@ class Mind :
 					load_where_user_left_last_time()
 			"create_scene":
 				create_new_scene(args)
+			"insert_connected_block":
+				insert_block_on_open_scene(args)
 			"inspect_node":
 				inspect_node(args, -1, true)
 			"query_nodes":
@@ -1148,6 +1150,28 @@ class Mind :
 					})
 					Grid.call_deferred("draw_connections_batch", [ full_connection ])
 		pass
+
+	func insert_block_on_open_scene(node_type: String) -> void:
+		if (node_type is String) == false || NODE_TYPES_LIST.has(node_type) == false:
+			return
+		var entry_id = get_scene_entry()
+		var offset = Vector2(480, 240)
+		var connection = null
+		if entry_id >= 0 && _PROJECT.resources.scenes.has(_CURRENT_OPEN_SCENE_ID):
+			var scene = _PROJECT.resources.scenes[_CURRENT_OPEN_SCENE_ID]
+			if scene.map.has(entry_id) && scene.map[entry_id].has("offset"):
+				var origin = scene.map[entry_id].offset
+				offset = Vector2(float(origin[0]) + 360.0, float(origin[1]))
+			var taken = false
+			if scene.map[entry_id].has("io") && scene.map[entry_id].io is Array:
+				for link in scene.map[entry_id].io:
+					if link is Array && link.size() >= 2 && int(link[1]) == 0:
+						taken = true
+						break
+			if taken == false:
+				connection = [entry_id, 0, true]
+		quick_insert_node(node_type, offset, connection)
+		pass
 	
 	# -1 means current open scene
 	func get_scene_entry(scene_id:int = -1) -> int:
@@ -1550,13 +1574,21 @@ class Mind :
 			check_result = true
 		else:
 			if check_only != true:
-				show_error(
-					"Unsafe Operation Ignored.",
-					(
-						tr("REFERENCED_RESOURCE_NOT_REMOVED") + "\n\n" +
-						tr("Referenced resource(s): ") + Helpers.Utils.stringify_json(nope_names, "") + "\n"
+				var only_entries = true
+				for blocked in nope:
+					if (blocked is Array) == false || blocked.size() < 2 || blocked[1] != "Scene or Project Entry!":
+						only_entries = false
+						break
+				if only_entries:
+					show_error(tr("Cannot Remove Entry"), tr("SCENE_ENTRY_CANNOT_BE_REMOVED"))
+				else:
+					show_error(
+						"Unsafe Operation Ignored.",
+						(
+							tr("REFERENCED_RESOURCE_NOT_REMOVED") + "\n\n" +
+							tr("Referenced resource(s): ") + Helpers.Utils.stringify_json(nope_names, "") + "\n"
+						)
 					)
-				)
 				printerr("Batch remove operation discarded due to existing use cases: ", nope)
 			check_result = false
 		return (
@@ -1766,6 +1798,7 @@ class Mind :
 				Inspector.Tab.Macros.call_deferred("list_macros", { new_scene_seed_id : cloned_resource })
 			else:
 				Inspector.Tab.Scenes.call_deferred("list_scenes", { new_scene_seed_id : cloned_resource })
+			scene_editorial_open(new_scene_seed_id, false)
 		else:
 			print_stack()
 			printerr("Unexpected Behavior! Unable to create entry node for new scene with type=%s", required_entry_type)

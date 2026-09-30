@@ -119,7 +119,7 @@ func reset_quick_edit_buttons():
 	var selected_nodes_are_moveable = there_is_selection && (Main.Mind.immovable_nodes(Grid._ALREADY_SELECTED_NODE_IDS).size() == 0)
 	var clipboard_has_copy_or_paste = Main.Mind.clipboard_available()
 	PasteClipboardButton.set_disabled( clipboard_has_copy_or_paste == false )
-	RemoveNodesButton.set_disabled( selected_nodes_are_removable == false )
+	RemoveNodesButton.set_disabled( there_is_selection == false )
 	CutNodesButton.set_disabled( selected_nodes_are_moveable == false )
 	# copy and clean-clipboard buttons will switch visibility when there_is_selection
 	ClearClipboardButton.set("visible", there_is_selection == false && (clipboard_has_copy_or_paste || there_is_highlight))
