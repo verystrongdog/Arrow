@@ -28,6 +28,7 @@ signal request_mind()
 @onready var OpenSceneTitle = $/root/Main/Editor/Bottom/Bar/SceneTitle
 @onready var AddDialogButton = $/root/Main/Editor/Bottom/Bar/AddDialog
 @onready var AddInteractionButton = $/root/Main/Editor/Bottom/Bar/AddInteraction
+@onready var AddContentButton = $/root/Main/Editor/Bottom/Bar/AddContent
 
 func _ready() -> void:
 	register_connections()
@@ -43,6 +44,7 @@ func register_connections() -> void:
 	PlayFromSelectedNodeButton.pressed.connect(self._request_mind.bind("console_play_from", "selected_node"))
 	AddDialogButton.pressed.connect(self._request_mind.bind("insert_connected_block", "dialog"))
 	AddInteractionButton.pressed.connect(self._request_mind.bind("insert_connected_block", "interaction"))
+	AddContentButton.pressed.connect(self._request_mind.bind("insert_connected_block", "content"))
 	pass
 
 func set_project_title(title:String) -> void:
@@ -54,8 +56,9 @@ func set_project_save_status(is_saved:bool = false) -> void:
 	SaveIndicator.set_deferred("color", color)
 	pass
 
-func set_scene_name(the_scene_name:String) -> void:
+func set_scene_name(the_scene_name:String, tip:String = "") -> void:
 	OpenSceneTitle.set_deferred("text", the_scene_name)
+	OpenSceneTitle.set_deferred("tooltip_text", tip)
 	pass
 
 func reset_history_tools(current_index: int, history_size: int, is_locked: bool = false) -> void:

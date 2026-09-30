@@ -4,5 +4,6 @@
 
 # Arrow ignores
 *.arrow
+!examples/*.arrow
 .arrow.config
 .arrow.project

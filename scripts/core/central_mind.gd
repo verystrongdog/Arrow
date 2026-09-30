@@ -659,7 +659,12 @@ class Mind :
 			Grid.call_deferred("draw_queued_connection")
 			Grid.call_deferred("reset_view_to_initial")
 			# load the scene title / name
-			Editor.call_deferred("set_scene_name", the_scene.name)
+			var canvas_name = the_scene.name
+			var canvas_tip = ""
+			if is_scene_macro(scene_id):
+				canvas_name = tr("Macro · {name}").format({"name": the_scene.name})
+				canvas_tip = tr("This canvas is the inside of the macro. Right-click empty space to insert a node, or use the bottom bar. New blocks are wired along the entry's first outgoing pin. A macro cannot contain a Macro Use node; call it from a normal scene.")
+			Editor.call_deferred("set_scene_name", canvas_name, canvas_tip)
 			# then jump to a node if annotated
 			if focus_node_id >= 0:
 				if the_scene.map.has(focus_node_id):
@@ -1132,7 +1137,7 @@ class Mind :
 				offset += Settings.BATCH_NODE_INSERTION_POSITION_ADJUSTMENT_VECTOR2
 		pass
 	
-	func quick_insert_node(node_type:String, offset:Vector2, connection = null) -> void:
+	func quick_insert_node(node_type:String, offset:Vector2, connection = null) -> int:
 		var new_node_id = create_insert_node(node_type, offset)
 		if connection is Array && connection.size() == 3:
 			if connection[2] is bool:
@@ -1149,28 +1154,70 @@ class Mind :
 						"io": { "push": [ full_connection ] } 
 					})
 					Grid.call_deferred("draw_connections_batch", [ full_connection ])
-		pass
+		return new_node_id
 
+	# Dialog, interaction and condition keep their first outgoing pin on slot 1.
+	# Slot 0 on those nodes is the incoming head. Jump and frame have no outgoing pin.
+	func _outgoing_pin(node: Dictionary) -> int:
+		match String(node.get("type", "")):
+			"dialog", "interaction", "condition":
+				return 1
+			"jump", "frame":
+				return -1
+			_:
+				return 0
+
+	func _pin_destination(node_map: Dictionary, node_id: int, slot: int) -> int:
+		if node_map.has("io") && node_map.io is Array:
+			for link in node_map.io:
+				if link is Array && link.size() >= 3 && int(link[0]) == node_id && int(link[1]) == slot:
+					return int(link[2])
+		return -1
+
+	# Append a node onto the open canvas. A macro is that canvas: opening it, then
+	# calling this, is how a block gets inside the macro. The new block hangs off
+	# the first free pin along the entry's first wire, so repeated clicks grow a line
+	# instead of stacking on the entry.
 	func insert_block_on_open_scene(node_type: String) -> void:
 		if (node_type is String) == false || NODE_TYPES_LIST.has(node_type) == false:
 			return
+		if _CURRENT_OPEN_SCENE_ID < 0 || _PROJECT.resources.scenes.has(_CURRENT_OPEN_SCENE_ID) == false:
+			return
+		if is_scene_macro() && Settings.NODE_TYPES_RESTRICTED_IN_MACROS.has(node_type):
+			return
+		var scene = _PROJECT.resources.scenes[_CURRENT_OPEN_SCENE_ID]
 		var entry_id = get_scene_entry()
-		var offset = Vector2(480, 240)
+		var anchor_id := -1
+		var anchor_slot := -1
+		var pin_free := false
+		var offset := Vector2(480, 240)
+		if entry_id >= 0 && scene.map.has(entry_id):
+			var current := entry_id
+			var guard := 0
+			while guard < 128:
+				guard += 1
+				if scene.map.has(current) == false || _PROJECT.resources.nodes.has(current) == false:
+					break
+				var here: Dictionary = scene.map[current]
+				if here.has("offset") && here.offset is Array && here.offset.size() == 2:
+					offset = Vector2(float(here.offset[0]) + 360.0, float(here.offset[1]))
+				var slot := _outgoing_pin(_PROJECT.resources.nodes[current])
+				if slot < 0:
+					break
+				anchor_id = current
+				anchor_slot = slot
+				var dest := _pin_destination(here, current, slot)
+				if dest < 0 || scene.map.has(dest) == false:
+					pin_free = true
+					break
+				current = dest
 		var connection = null
-		if entry_id >= 0 && _PROJECT.resources.scenes.has(_CURRENT_OPEN_SCENE_ID):
-			var scene = _PROJECT.resources.scenes[_CURRENT_OPEN_SCENE_ID]
-			if scene.map.has(entry_id) && scene.map[entry_id].has("offset"):
-				var origin = scene.map[entry_id].offset
-				offset = Vector2(float(origin[0]) + 360.0, float(origin[1]))
-			var taken = false
-			if scene.map[entry_id].has("io") && scene.map[entry_id].io is Array:
-				for link in scene.map[entry_id].io:
-					if link is Array && link.size() >= 2 && int(link[1]) == 0:
-						taken = true
-						break
-			if taken == false:
-				connection = [entry_id, 0, true]
-		quick_insert_node(node_type, offset, connection)
+		if pin_free && anchor_id >= 0 && anchor_slot >= 0:
+			connection = [anchor_id, anchor_slot, true]
+		var new_node_id := quick_insert_node(node_type, offset, connection)
+		if new_node_id >= 0:
+			inspect_node(new_node_id, _CURRENT_OPEN_SCENE_ID, true)
+			Grid.call_deferred("select_node_by_id", new_node_id, true)
 		pass
 	
 	# -1 means current open scene

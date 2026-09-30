@@ -924,11 +924,23 @@ msgstr "加对话"
 msgid "Add Interaction"
 msgstr "加交互"
 
+msgid "Add Content"
+msgstr "加内容"
+
+msgid "Appends a block at the end of the open canvas. Open a macro first; the new node is then inside that macro, wired from the first free pin along the entry line."
+msgstr "加在当前画布的末尾。先在「宏」页打开宏，底栏标题会变成「宏 · 名字」，这时加的节点才进宏里。已经接上的线会顺着第一条出口往下找，新的一块接在最后。"
+
+msgid "Macro · {name}"
+msgstr "宏 · {name}"
+
+msgid "This canvas is the inside of the macro. Right-click empty space to insert a node, or use the bottom bar. New blocks are wired along the entry's first outgoing pin. A macro cannot contain a Macro Use node; call it from a normal scene."
+msgstr "这块画布就是宏的内部。右键空白处插入节点，或用底栏「加对话」「加交互」「加内容」，它们会接到入口这条线的末尾。宏里不能再放「使用宏」。回到普通场景，放一个「使用宏」节点并在检查器里选中这个宏，才是调用它。"
+
 msgid "Cannot Remove Entry"
 msgstr "入口留着"
 
 msgid "SCENE_ENTRY_CANNOT_BE_REMOVED"
-msgstr "这是这段的入口，不能删。播放从这里开始。从它右边的针脚拖到空白处，下一句会接上。底栏的「加对话」「加交互」也会接在它后面。"
+msgstr "这是这段的入口，不能删。播放从这里开始。从它右边的针脚拖到空白处，下一句会接上。底栏的「加对话」「加交互」「加内容」会顺着第一条线接到末尾。"
 
 
 # -----------------------------------------------------
