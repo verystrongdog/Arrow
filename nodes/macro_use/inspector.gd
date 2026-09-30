@@ -71,7 +71,7 @@ func refresh_macro_list(select_by_res_id:int = NO_MACRO_ID) -> void:
 			if macro_id == already || apply_globals == false || MacrosInspector.passes_filters(global_filters, macro_id, the_macro):
 				listing[the_macro.name] = macro_id
 		if listing.size() == 0:
-			MacroOptions.add_item(NO_MACRO_TEXT, NO_MACRO_ID)
+			MacroOptions.add_item(tr(NO_MACRO_TEXT), NO_MACRO_ID)
 			MacroOptions.set_item_metadata(0, NO_MACRO_ID)
 		else:
 			var listing_keys = listing.keys()
@@ -103,7 +103,7 @@ func refresh_macro_list(select_by_res_id:int = NO_MACRO_ID) -> void:
 				var the_looper_idx = find_listed_macro_index(_current_open_scene_id)
 				MacroOptions.set_item_disabled(the_looper_idx, true)
 	else:
-		MacroOptions.add_item(NO_MACRO_TEXT, NO_MACRO_ID)
+		MacroOptions.add_item(tr(NO_MACRO_TEXT), NO_MACRO_ID)
 		MacroOptions.set_item_metadata(0, NO_MACRO_ID)
 	pass
 

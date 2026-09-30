@@ -45,7 +45,7 @@ const DEFAULT_NODE_DATA = {
 
 # Invalid but may be used in display
 const ANONYMOUS_CHARACTER = {
-	"name": "Anonymous" ,
+	"name": "匿名" ,
 	"color": "ffffff", # white
 }
 

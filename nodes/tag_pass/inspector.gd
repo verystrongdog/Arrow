@@ -55,7 +55,7 @@ func register_connections() -> void:
 func refresh_methods_list(select_by_method_id: int = -1) -> void:
 	Methods.clear()
 	for method_id in METHODS:
-		Methods.add_item( METHODS[method_id], method_id )
+		Methods.add_item( tr(METHODS[method_id]), method_id )
 	# ...
 	if select_by_method_id >= 0 :
 		var the_method_item_idx = Methods.get_item_index( select_by_method_id )
@@ -89,7 +89,7 @@ func refresh_characters_list(select_by_res_id:int = -1) -> void:
 			if character_id == already || apply_globals == false || CharactersInspector.passes_filters(global_filters, character_id, the_character):
 				listing[the_character.name] = character_id
 		if listing.size() == 0:
-			Characters.add_item(NO_CHARACTER_TEXT, NO_CHARACTER_ID)
+			Characters.add_item(tr(NO_CHARACTER_TEXT), NO_CHARACTER_ID)
 			Characters.set_item_metadata(0, NO_CHARACTER_ID)
 		else:
 			var listing_keys = listing.keys()
@@ -109,7 +109,7 @@ func refresh_characters_list(select_by_res_id:int = -1) -> void:
 					var character_item_index = find_listed_character_index(already)
 					Characters.select( character_item_index )
 	else:
-		Characters.add_item(NO_CHARACTER_TEXT, NO_CHARACTER_ID)
+		Characters.add_item(tr(NO_CHARACTER_TEXT), NO_CHARACTER_ID)
 		Characters.set_item_metadata(0, NO_CHARACTER_ID)
 	pass
 
@@ -199,8 +199,8 @@ func append_tag_to_box(key: String, value) -> void:
 	the_popup.add_item(key_value_display, 0)
 	the_popup.set_item_disabled(0, true)
 	the_popup.add_separator("", 0)
-	the_popup.add_item("Edit", 1)
-	the_popup.add_item("Drop", 2)
+	the_popup.add_item(tr("Edit"), 1)
+	the_popup.add_item(tr("Drop"), 2)
 	the_popup.id_pressed.connect(self.take_tag_menu_action.bind(key, value), CONNECT_DEFERRED)
 	# ...
 	TagBox.add_child(the_tag)

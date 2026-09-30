@@ -97,7 +97,7 @@ func refresh_methods_list() -> void:
 	for method in valid_methods:
 		_METHODS_LISTED_BY_ITEM_ID[method_id] = method
 		_METHODS_ITEM_ID_LISTED_BY_KEY[method] = method_id
-		Methods.add_item( GeneratorSharedClass.METHODS[method], method_id )
+		Methods.add_item( tr(GeneratorSharedClass.METHODS[method]), method_id )
 		method_id += 1
 	# select the method if the node has anyone set
 	if a_node_is_open() && _OPEN_NODE.data.variable == selected_variable_id:
@@ -127,7 +127,7 @@ func refresh_variables_list(select_by_res_id:int = -1) -> void:
 			if variable_id == already || apply_globals == false || VariablesInspector.passes_filters(global_filters, variable_id, the_variable):
 				listing[the_variable.name] = variable_id
 		if listing.size() == 0:
-			Variables.add_item(NO_VARIABLE_TEXT, NO_VARIABLE_ID)
+			Variables.add_item(tr(NO_VARIABLE_TEXT), NO_VARIABLE_ID)
 			Variables.set_item_metadata(0, NO_VARIABLE_ID)
 		else:
 			var listing_keys = listing.keys()
@@ -147,7 +147,7 @@ func refresh_variables_list(select_by_res_id:int = -1) -> void:
 					var variable_item_index = find_listed_variable_index(already)
 					Variables.select( variable_item_index )
 	else:
-		Variables.add_item(NO_VARIABLE_TEXT, NO_VARIABLE_ID)
+		Variables.add_item(tr(NO_VARIABLE_TEXT), NO_VARIABLE_ID)
 		Variables.set_item_metadata(0, NO_VARIABLE_ID)
 	pass
 

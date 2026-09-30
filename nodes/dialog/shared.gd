@@ -14,13 +14,13 @@ const SAVE_UNOPTIMIZED = false
 
 const DEFAULT_NODE_DATA = {
 	"character": -1, # ~ anonymous or unset (hardcoded convention)
-	"lines": ["Hey there!"],
+	"lines": ["嘿，你好。"],
 	# -- optional(s) --
 	# > Manual playability. Hint: To optimize, set it for majority.
 	"playable": false, # (It's `false` for mostly NPC talk.)
 }
 
 const ANONYMOUS_CHARACTER = {
-	"name": "Anonymous" ,
+	"name": "匿名" ,
 	"color": "ffffff", # white
 }

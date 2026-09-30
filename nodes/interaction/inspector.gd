@@ -63,7 +63,7 @@ func load_tools_menu() -> void:
 		if item == null: # separator
 			ToolsPopup.add_separator()
 		else:
-			ToolsPopup.add_item(item.label, item_id)
+			ToolsPopup.add_item(tr(item.label), item_id)
 			_TOOLS_ITEM_INDEX_BY_ACTION[item.action] = ToolsPopup.get_item_index(item_id)
 	self.call_deferred("_toggle_available_tools_smartly")
 	pass

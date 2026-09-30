@@ -58,7 +58,7 @@ func _ready() -> void:
 func load_parameter_types() -> void:
 	ParameterType.clear()
 	for type_id in PARAMETER_MODES_ENUM:
-		var type_text = PARAMETER_MODES_ENUM[type_id].capitalize() 
+		var type_text = tr(PARAMETER_MODES_ENUM[type_id].capitalize())
 		ParameterType.add_item(type_text, type_id)
 	pass
 
@@ -117,7 +117,7 @@ func refresh_variables_list(select_by_res_id:int = -1) -> void:
 			if variable_id == already || apply_globals == false || VariablesInspector.passes_filters(global_filters, variable_id, the_variable):
 				listing[the_variable.name] = variable_id
 		if listing.size() == 0:
-			Variables.add_item(NO_VARIABLE_TEXT, NO_VARIABLE_ID)
+			Variables.add_item(tr(NO_VARIABLE_TEXT), NO_VARIABLE_ID)
 			Variables.set_item_metadata(0, NO_VARIABLE_ID)
 		else:
 			var listing_keys = listing.keys()
@@ -137,7 +137,7 @@ func refresh_variables_list(select_by_res_id:int = -1) -> void:
 					var variable_item_index = find_listed_variable_index(already)
 					Variables.select( variable_item_index )
 	else:
-		Variables.add_item(NO_VARIABLE_TEXT, NO_VARIABLE_ID)
+		Variables.add_item(tr(NO_VARIABLE_TEXT), NO_VARIABLE_ID)
 		Variables.set_item_metadata(0, NO_VARIABLE_ID)
 	pass
 

@@ -63,7 +63,7 @@ const USE_DEPRECATED_BIN_SAVE = false
 
 # UID Management
 
-const ANONYMOUS_AUTHOR_INFO = "Anonymous Contributor"
+const ANONYMOUS_AUTHOR_INFO = "匿名贡献者"
 
 # > Native Distributed UID (Arrow-Flake)
 # Default UIDs are inspired by Snowflakes, but highly customized,
@@ -202,8 +202,8 @@ const FORCE_UNIQUE_NAMES_FOR_CHARACTERS = true
 const REUSED_CHARACTER_NAMES_AUTO_POSTFIX = "_"
 const CHARACTER_NAMES_PREFIX = "char_"
 
-const SCENE_NAME_PREFIX = "scene_"
-const MACRO_NAME_PREFIX = "macro_"
+const SCENE_NAME_PREFIX = "场景_"
+const MACRO_NAME_PREFIX = "宏_"
 const FORCE_UNIQUE_NAMES_FOR_SCENES_AND_MACROS = true
 const REUSED_SCENE_OR_MACRO_NAMES_AUTO_POSTFIX = "_"
 

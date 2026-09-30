@@ -54,7 +54,7 @@ func get_the_ui_nodes_all() -> void:
 func refresh_appearance_theme_options() -> void:
 	FIELDS.appearance_theme.clear()
 	for theme_id in Settings.THEMES:
-		FIELDS.appearance_theme.add_item(Settings.THEMES[theme_id].name, theme_id)
+		FIELDS.appearance_theme.add_item(tr(Settings.THEMES[theme_id].name), theme_id)
 	pass
 	
 func refresh_language_options() -> void:

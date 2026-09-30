@@ -61,7 +61,7 @@ func create_menu_items() -> void:
 				the_item.has("html5") == false || # (is always available)
 				(the_item.html5 == being_in_browser) # (depending on the environment)
 			):
-				popup.add_item(the_item.text, item_id)
+				popup.add_item(tr(the_item.text), item_id)
 				_IDX[item] = popup.get_item_index(item_id)
 		else:
 			popup.add_separator();
@@ -72,12 +72,12 @@ func update_menu_items_view() -> void:
 	var is_fullscreen = (DisplayServer.window_get_mode() >= DisplayServer.WindowMode.WINDOW_MODE_FULLSCREEN)
 	popup.set_item_text(
 		_IDX.FULLSCREEN,
-		_MENU_ITEMS_DATA[_ID.FULLSCREEN].text_toggled if is_fullscreen else _MENU_ITEMS_DATA[_ID.FULLSCREEN].text
+		tr(_MENU_ITEMS_DATA[_ID.FULLSCREEN].text_toggled) if is_fullscreen else tr(_MENU_ITEMS_DATA[_ID.FULLSCREEN].text)
 	)
 	if _IDX.has("ALWAYS_ON_TOP"):
 		popup.set_item_text(
 			_IDX.ALWAYS_ON_TOP,
-			_MENU_ITEMS_DATA[_ID.ALWAYS_ON_TOP].text_toggled if TheWindow.always_on_top else _MENU_ITEMS_DATA[_ID.ALWAYS_ON_TOP].text
+			tr(_MENU_ITEMS_DATA[_ID.ALWAYS_ON_TOP].text_toggled) if TheWindow.always_on_top else tr(_MENU_ITEMS_DATA[_ID.ALWAYS_ON_TOP].text)
 		)
 	pass
 
@@ -89,11 +89,11 @@ func prompt_to_clear_browser_storage() -> void:
 	if Html5Helpers.Utils.is_browser():
 		Main.Mind.Notifier.call_deferred(
 			"show_notification",
-			"Are you sure ?",
+			tr("Are you sure ?"),
 			"BROWSER_STORAGE_CLEAR_PROMPT",
 			[
 				{ 
-					"label": "Ok; Terminate!",
+					"label": tr("Ok; Terminate!"),
 					"callee": self,
 					"method": "force_clear_browser_storage",
 					"arguments": []

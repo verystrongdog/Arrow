@@ -46,7 +46,7 @@ class NodeTypesHandler :
 			# ...
 			return {
 				"type": node_type_dir_name,
-				"text": node_type_dir_name.capitalize(),
+				"text": tr(node_type_dir_name.capitalize()),
 				"node": the_node,
 				"inspector": the_inspector,
 				"console": the_console,

@@ -58,7 +58,7 @@ const Data = {
 	
 	# Blank (New) Project:
 	"Untitled_Project": {
-		"title": "Untitled Adventure",
+		"title": "未命名的冒险",
 		"entry": 1, # Resource-UID of the document/chapter's main (active) entry node
 		"meta": {
 			# Native (default) distributed UID metadata:
@@ -112,12 +112,12 @@ const Data = {
 				1: {
 					"type": "entry",
 					"name": "1",
-					"data": { "plaque": "Start" }
+					"data": { "plaque": "开始" }
 				},
 				2: {
 					"type": "content",
 					"name": "2",
-					"data": { "title": "Hello World!", "content": "Let's begin our adventure." } 
+					"data": { "title": "你好，世界！", "content": "让我们开始这段冒险。" } 
 				},
 			},
 			"variables": {},

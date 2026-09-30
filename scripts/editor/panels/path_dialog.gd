@@ -35,7 +35,18 @@ func refresh_prompt_for(
 	_CURRENT_CALLBACK_IDENT = callback_ident
 	_CURRENT_EXTRA_ARGUMENTS = extra_arguments.duplicate(true)
 	for option in dialog_options:
-		if option in self:
+		if option == "title":
+			self.title = tr(str(dialog_options[option]))
+		elif option == "filters":
+			var translated := PackedStringArray()
+			for filter in dialog_options[option]:
+				var parts := str(filter).split(";")
+				if parts.size() == 2:
+					translated.append(parts[0] + ";" + tr(parts[1]))
+				else:
+					translated.append(str(filter))
+			self.filters = translated
+		elif option in self:
 			self.set(option, dialog_options[option])
 	if display:
 		self.call_deferred("set_exclusive", true) # do not close by clicking outside the panel

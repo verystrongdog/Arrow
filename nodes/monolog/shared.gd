@@ -23,6 +23,6 @@ const DEFAULT_NODE_DATA = {
 
 # Monolog follows the same convention that other character related nodes have.
 const ANONYMOUS_CHARACTER = {
-	"name": "Anonymous" ,
+	"name": "匿名" ,
 	"color": "ffffff", # white
 }

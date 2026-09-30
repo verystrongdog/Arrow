@@ -96,7 +96,7 @@ func refresh_variable_type_selection() -> void:
 		var the_type = Settings.VARIABLE_TYPES[type]
 		VariablesTypeSelect.add_item(
 			VARIABLE_TYPE_IN_SELECTION_TEXT_TEMPLATE.format({
-				"name": the_type.name,
+				"name": tr(the_type.name),
 				"type": type
 			}),
 			type_id

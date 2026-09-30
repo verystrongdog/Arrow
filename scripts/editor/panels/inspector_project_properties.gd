@@ -77,7 +77,7 @@ func load_more_tools_menu() -> void:
 				item.has("html5") == false || # (is always available)
 				(item.html5 == being_in_browser) # (depending on the environment)
 			):
-				MoreToolsPopup.add_item(item.label, item_id)
+				MoreToolsPopup.add_item(tr(item.label), item_id)
 				_MORE_TOOLS_ITEM_INDEX_BY_ACTION[item.action] = MoreToolsPopup.get_item_index(item_id)
 	pass
 

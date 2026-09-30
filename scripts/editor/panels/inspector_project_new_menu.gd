@@ -41,7 +41,7 @@ func create_menu_items() -> void:
 				the_item.has("html5") == false || # (is always available)
 				(the_item.html5 == being_in_browser) # (depending on the environment)
 			):
-				popup.add_item(the_item.text, item_id)
+				popup.add_item(tr(the_item.text), item_id)
 				_IDX[item] = popup.get_item_index(item_id)
 		else:
 			popup.add_separator();

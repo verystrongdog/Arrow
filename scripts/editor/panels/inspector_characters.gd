@@ -342,8 +342,8 @@ func append_tag_to_box(key: String, value: String) -> void:
 	the_popup.add_item(key_value_display, 0)
 	the_popup.set_item_disabled(0, true)
 	the_popup.add_separator("", 0)
-	the_popup.add_item("Edit", 1)
-	the_popup.add_item("Unset", 2)
+	the_popup.add_item(tr("Edit"), 1)
+	the_popup.add_item(tr("Unset"), 2)
 	the_popup.id_pressed.connect(self.take_tag_action.bind(key, value), CONNECT_DEFERRED)
 	# ...
 	TagBox.add_child(the_tag)

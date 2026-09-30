@@ -108,9 +108,9 @@ func load_console_settings_menu() -> void:
 			SettingsMenuButtonPopup.add_separator()
 		else:
 			if item.has("is_checkbox") && item.is_checkbox == true:
-				SettingsMenuButtonPopup.add_check_item(item.label, item_id)
+				SettingsMenuButtonPopup.add_check_item(tr(item.label), item_id)
 			else:
-				SettingsMenuButtonPopup.add_item(item.label, item_id)
+				SettingsMenuButtonPopup.add_item(tr(item.label), item_id)
 			_CONSOLE_SETTINGS_MENU_ITEM_INDEX_BY_ACTION[item.action] = SettingsMenuButtonPopup.get_item_index(item_id)
 	# update checkboxes ...
 	refresh_console_setting_menu_buttons()
@@ -139,7 +139,7 @@ func refresh_variables_list() -> void:
 				VariableInspectorSelect.select(the_selected_one_index_before_refresh)
 			no_var_yet = false
 	if no_var_yet:
-		VariableInspectorSelect.add_item("No Variable Available", -1)
+		VariableInspectorSelect.add_item(tr("No Variable Available"), -1)
 		VariableInspectorSelect.set_item_metadata(0, -1)
 	inspect_variable()
 	pass
@@ -214,7 +214,7 @@ func refresh_characters_list() -> void:
 				CharTagsInspectorSelect.select(the_selected_one_index_before_refresh)
 			no_char_yet = false
 	if no_char_yet:
-		CharTagsInspectorSelect.add_item("No Character Available", -1)
+		CharTagsInspectorSelect.add_item(tr("No Character Available"), -1)
 		CharTagsInspectorSelect.set_item_metadata(0, -1)
 	inspect_character()
 	pass
@@ -255,8 +255,8 @@ func append_char_tag_to_box(char_id: int, key: String, value: String) -> void:
 	the_popup.add_item(key_value_display, 0)
 	the_popup.set_item_disabled(0, true)
 	the_popup.add_separator("", 0)
-	the_popup.add_item("Edit", 1)
-	the_popup.add_item("Unset", 2)
+	the_popup.add_item(tr("Edit"), 1)
+	the_popup.add_item(tr("Unset"), 2)
 	the_popup.id_pressed.connect(self.take_char_tag_action.bind(char_id, key, value), CONNECT_DEFERRED)
 	# ...
 	CharTagsInspectorTagBox.add_child(the_tag)

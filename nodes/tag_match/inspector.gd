@@ -73,7 +73,7 @@ func load_tools_menu() -> void:
 		if item == null: # separator
 			ToolsPopup.add_separator()
 		else:
-			ToolsPopup.add_item(item.label, item_id)
+			ToolsPopup.add_item(tr(item.label), item_id)
 			_TOOLS_ITEM_INDEX_BY_ACTION[item.action] = ToolsPopup.get_item_index(item_id)
 	self.call_deferred("_toggle_available_tools_smartly")
 	pass
@@ -246,7 +246,7 @@ func refresh_character_list(select_by_res_id:int = -1) -> void:
 			if character_id == already || apply_globals == false || CharactersInspector.passes_filters(global_filters, character_id, the_character):
 				listing[the_character.name] = character_id
 		if listing.size() == 0:
-			Character.add_item(NO_CHARACTER_TEXT, NO_CHARACTER_ID)
+			Character.add_item(tr(NO_CHARACTER_TEXT), NO_CHARACTER_ID)
 			Character.set_item_metadata(0, NO_CHARACTER_ID)
 		else:
 			var listing_keys = listing.keys()
@@ -266,7 +266,7 @@ func refresh_character_list(select_by_res_id:int = -1) -> void:
 					var character_item_index = find_listed_character_index(already)
 					Character.select( character_item_index )
 	else:
-		Character.add_item(NO_CHARACTER_TEXT, NO_CHARACTER_ID)
+		Character.add_item(tr(NO_CHARACTER_TEXT), NO_CHARACTER_ID)
 		Character.set_item_metadata(0, NO_CHARACTER_ID)
 	pass
 

@@ -33,9 +33,9 @@ func load_quick_preferences_menu() -> void:
 			QuickPreferencesPopup.add_separator()
 		else:
 			if item.has("is_checkbox") && item.is_checkbox == true:
-				QuickPreferencesPopup.add_check_item(item.label, item_id)
+				QuickPreferencesPopup.add_check_item(tr(item.label), item_id)
 			else:
-				QuickPreferencesPopup.add_item(item.label, item_id)
+				QuickPreferencesPopup.add_item(tr(item.label), item_id)
 	# update checkboxes ...
 	refresh_quick_preferences_menu_view()
 	pass

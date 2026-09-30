@@ -44,7 +44,7 @@ func register_connections() -> void:
 func refresh_methods_list(select_by_method_id: int = -1) -> void:
 	Methods.clear()
 	for method_id in METHODS:
-		Methods.add_item( METHODS[method_id], method_id )
+		Methods.add_item( tr(METHODS[method_id]), method_id )
 	# ...
 	if select_by_method_id >= 0 :
 		var the_method_item_idx = Methods.get_item_index( select_by_method_id )

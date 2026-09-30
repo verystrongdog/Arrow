@@ -951,3 +951,246 @@ msgstr "操作系统默认应用本地目录"
 
 msgid "ALD_PRESET_RES_DIR"
 msgstr "相对于 Arrow 可执行文件的路径"
+
+msgid "Dark"
+msgstr "深色"
+
+msgid "Light"
+msgstr "浅色"
+
+msgid "Number"
+msgstr "数字"
+
+msgid "String"
+msgstr "文本"
+
+msgid "Boolean"
+msgstr "是非"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Unset"
+msgstr "清除"
+
+msgid "Drop"
+msgstr "去掉"
+
+msgid "No Variable Available"
+msgstr "没有可用变量"
+
+msgid "No Character Available"
+msgstr "没有可用角色"
+
+msgid "Are you sure ?"
+msgstr "确定要这样做吗？"
+
+msgid "[Mode]"
+msgstr "[方式]"
+
+msgid "Any Match"
+msgstr "任意匹配"
+
+msgid "Including"
+msgstr "包含"
+
+msgid "Exact Match"
+msgstr "完全匹配"
+
+msgid "RegEx"
+msgstr "正则"
+
+msgid "Auto-scroll"
+msgstr "自动滚动"
+
+msgid "Allow Auto-play"
+msgstr "允许自动播放"
+
+msgid "Prevent Clearance"
+msgstr "防止清屏"
+
+msgid "Show Skipped Nodes"
+msgstr "显示跳过的节点"
+
+msgid "Inspect Variables"
+msgstr "检查变量"
+
+msgid "Inspect Character Tags"
+msgstr "检查角色标签"
+
+msgid "Save a Copy"
+msgstr "另存一份"
+
+msgid "Download a Copy"
+msgstr "下载一份"
+
+msgid "Arrow Document"
+msgstr "Arrow 文档"
+
+msgid "Purged Arrow Export"
+msgstr "精简的 Arrow 导出"
+
+msgid "Playable HTML"
+msgstr "可玩的 HTML"
+
+msgid "Translation File"
+msgstr "翻译文件"
+
+msgid "[Will be Auto-generated]"
+msgstr "[将自动生成]"
+
+msgid "[Heading]"
+msgstr "[标题]"
+
+msgid "[i][Message Here!][/i]"
+msgstr "[i][写在这里][/i]"
+
+msgid "[Action(s)]"
+msgstr "[操作]"
+
+msgid "[ [color=green]Project descriptions[/color] are fetched from the notes on the [color=yellow]entry node[/color] of the selected one ]"
+msgstr "[ [color=green]项目说明[/color]取自所选项目 [color=yellow]入口节点[/color] 上的备注 ]"
+
+msgid "[Project Title]"
+msgstr "[项目标题]"
+
+msgid "Ref(s)"
+msgstr "引用"
+
+msgid "[ [color=green]Scene descriptions[/color] are fetched from the notes on the [color=yellow]entry node[/color] of the selected one ]"
+msgstr "[ [color=green]场景说明[/color]取自所选场景 [color=yellow]入口节点[/color] 上的备注 ]"
+
+msgid "[ [color=green]Macro descriptions[/color] are fetched from the notes on the [color=yellow]entry node[/color] of the selected one ]"
+msgstr "[ [color=green]宏说明[/color]取自所选宏 [color=yellow]入口节点[/color] 上的备注 ]"
+
+msgid "Instance(s)"
+msgstr "实例"
+
+msgid "Reference(s)"
+msgstr "引用"
+
+msgid "Appearance(s)"
+msgstr "出现处"
+
+msgid "[New Version ?]"
+msgstr "[有新版本？]"
+
+msgid "[Current Scene]"
+msgstr "[当前场景]"
+
+msgid "[S:T Matches]"
+msgstr "[场景:类型 匹配]"
+
+msgid "[Method]"
+msgstr "[方法]"
+
+msgid "[Arguments]"
+msgstr "[参数]"
+
+msgid "[Target]"
+msgstr "[目标]"
+
+msgid "[Name]"
+msgstr "[名称]"
+
+msgid "[Slots]"
+msgstr "[槽位]"
+
+msgid "[Character Name]"
+msgstr "[角色名]"
+
+msgid "[Tag: Value]"
+msgstr "[标签: 值]"
+
+msgid "[Marker Color]"
+msgstr "[标记颜色]"
+
+msgid "[Marker Label]"
+msgstr "[标记文字]"
+
+msgid "[Node Name]"
+msgstr "[节点名]"
+
+msgid "[Expression]"
+msgstr "[表达式]"
+
+msgid "[Plaque]"
+msgstr "[铭牌]"
+
+msgid "[Tag Key]"
+msgstr "[标签键]"
+
+msgid "[Matched Pattern | EOL]"
+msgstr "[匹配的模式 | 结束]"
+
+msgid "[Tag-Key: Value]"
+msgstr "[标签键: 值]"
+
+msgid "[Macro Title]"
+msgstr "[宏标题]"
+
+msgid "[Type]"
+msgstr "[类型]"
+
+msgid "[Variable Name]"
+msgstr "[变量名]"
+
+msgid "[Prompt Question]"
+msgstr "[提示问题]"
+
+msgid "[Result]"
+msgstr "[结果]"
+
+msgid "[Rich [color=cyan]Monolog[/color] [color=yellow]Brief[/color] with [i]BBCode[/i] support]"
+msgstr "[支持 [i]BBCode[/i] 的富文本 [color=cyan]独白[/color][color=yellow]提要[/color]]"
+
+msgid "[Rich [color=cyan]Monolog[/color] with [i]BBCode[/i] support]"
+msgstr "[支持 [i]BBCode[/i] 的富文本 [color=cyan]独白[/color]]"
+
+msgid "[Rich [color=yellow]Title[/color]]"
+msgstr "[富文本 [color=yellow]标题[/color]]"
+
+msgid "[Rich [color=red]Content [/color] [color=green]Brief[/color] with [i]BBCode[/i] support]"
+msgstr "[支持 [i]BBCode[/i] 的富文本 [color=red]正文[/color][color=green]提要[/color]]"
+
+msgid "[Rich [color=green]Brief[/color] (legacy)]"
+msgstr "[富文本 [color=green]提要[/color]（旧）]"
+
+msgid "[Rich [color=red]Content [/color] all with [i]BBCode[/i] support]"
+msgstr "[均支持 [i]BBCode[/i] 的富文本 [color=red]正文[/color]]"
+
+msgid "Action Choice X."
+msgstr "选项 X。"
+
+msgid "Action Choice Y!"
+msgstr "选项 Y！"
+
+msgid "[Played Action]"
+msgstr "[已选操作]"
+
+msgid "[Frame Color]"
+msgstr "[画框颜色]"
+
+msgid "[Rich [color=red]Frame [/color] [color=green]Label[/color] with [i]BBCode[/i] support]"
+msgstr "[支持 [i]BBCode[/i] 的富文本 [color=red]画框[/color][color=green]标签[/color]]"
+
+msgid "[Frame Label]"
+msgstr "[画框文字]"
+
+msgid "[Destination]"
+msgstr "[目的地]"
+
+msgid "[Reason]"
+msgstr "[原因]"
+
+msgid "[Destination Name]"
+msgstr "[目的地名称]"
+
+msgid "[Statement]"
+msgstr "[判断]"
+
+msgid "Dialog line X."
+msgstr "台词 X。"
+
+msgid "Dialog line Y!"
+msgstr "台词 Y！"
