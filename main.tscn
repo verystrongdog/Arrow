@@ -886,6 +886,11 @@ text = "New"
 flat = false
 script = ExtResource("14_tk6u0")
 
+[node name="ImportFile" type="Button" parent="FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Import File"
+
 [node name="Open" type="Button" parent="FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/Actions"]
 layout_mode = 2
 size_flags_horizontal = 3

@@ -18,6 +18,7 @@ signal relay_request_mind()
 @onready var ProjectsList = $/root/Main/FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/VSplit/Items
 @onready var SelectedProjectDescription = $/root/Main/FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/VSplit/Description
 @onready var NewProjectMenu = $/root/Main/FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/Actions/New
+@onready var ImportProjectFile = $/root/Main/FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/Actions/ImportFile
 @onready var RemoveProject = $/root/Main/FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/Actions/Remove
 @onready var OpenProject = $/root/Main/FloatingTools/Control/Inspector/Sections/Tabs/Project/Listing/Actions/Open
 
@@ -37,6 +38,7 @@ func register_connections() -> void:
 		part.relay_request_mind.connect(self.request_mind_relay.bind(part), CONNECT_DEFERRED)
 	RemoveProject.pressed.connect(self.request_removing_project, CONNECT_DEFERRED)
 	OpenProject.pressed.connect(self.request_opening_project, CONNECT_DEFERRED)
+	ImportProjectFile.pressed.connect(self.request_importing_project)
 	ProjectsList.item_selected.connect(self._on_local_projects_list_item_selected, CONNECT_DEFERRED)
 	ProjectsList.item_activated.connect(self.request_opening_project, CONNECT_DEFERRED)
 	ProjectsList.empty_clicked.connect(self._on_local_projects_list_empty_clicked, CONNECT_DEFERRED)
@@ -121,6 +123,13 @@ func request_removing_project() -> void:
 	if selected.size() >= 1:
 		var project_id = ProjectsList.get_item_metadata(selected[0])
 		request_mind_relay("remove_local_project", project_id)
+	pass
+
+func request_importing_project() -> void:
+	if Html5Helpers.Utils.is_browser():
+		request_mind_relay("new_project", "from_browsed")
+	else:
+		request_mind_relay("new_project", "from_file")
 	pass
 
 func request_opening_project(selected_idx:int = -1) -> void:

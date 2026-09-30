@@ -915,6 +915,9 @@ msgstr "加载项目"
 msgid "Import Project File"
 msgstr "导入项目文件"
 
+msgid "Import File"
+msgstr "导入"
+
 
 # -----------------------------------------------------
 # scripts/editor/panels/inspector_project_properties.gd
