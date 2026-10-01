@@ -6,3 +6,6 @@
 *.arrow
 .arrow.config
 .arrow.project
+
+# CI 导出的 Web 构建产物（见 .github/workflows/pages.yml）
+/build/

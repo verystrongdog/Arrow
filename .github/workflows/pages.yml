@@ -1,0 +1,114 @@
+name: Deploy Web · GitHub Pages
+
+# 把 Arrow（简体中文分支）的 Web 构建发布成可以直接点开的公网页面：
+#   https://verystrongdog.github.io/Arrow/
+#
+# 和 game 仓库的 pages.yml 同一个思路：**构建脚本住在仓库里**，产物由 CI 现场生成，
+# 不依赖任何本地目录（原来 export_presets.cfg 里的 Web 预设写的是 ../website/v3/，
+# 那是仓库外面的路径，所以那个站点一旦没人手动推就断了 —— 现在改成 CI 里导出）。
+#
+# 为什么 CI 里能导出 Godot Web：
+#   1. 装 4.7-stable 的 headless 编辑器 + 同版本导出模板（模板用 actions/cache 缓存，
+#      首次约 1.2GB，之后命中缓存只要几秒）；
+#   2. 必须先跑一次 `--headless --import`，否则资源没导入，导出会失败或出一个空壳；
+#   3. `--export-release "Web" <路径>` 里的路径会覆盖预设里的 export_path。
+#
+# 首次还需要在仓库 Settings → Pages 把 Source 设为 "GitHub Actions"
+# （workflow 里的 actions/configure-pages 带了 enablement: true，通常能自动打开；
+#  若仍 404，就是这一步没生效，手动点一下即可）。
+
+on:
+  push:
+    branches: ['zh-cn']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一个 ref 上只跑一个部署；排队而不是取消，避免把较新的提交丢掉。
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7-stable
+  GODOT_BIN: Godot_v4.7-stable_linux.x86_64
+  TEMPLATE_DIR: ${{ github.workspace }}/.godot-templates
+
+jobs:
+  build:
+    name: build (godot web export)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 缓存导出模板
+        id: template-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.TEMPLATE_DIR }}
+          key: godot-export-templates-${{ env.GODOT_VERSION }}
+
+      - name: 装 Godot headless
+        run: |
+          set -euo pipefail
+          curl -sSL --retry 3 -o godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/${GODOT_BIN}.zip"
+          unzip -q godot.zip
+          chmod +x "${GODOT_BIN}"
+          ./"${GODOT_BIN}" --version
+
+      - name: 装导出模板
+        if: steps.template-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -sSL --retry 3 -o templates.tpz \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          rm -rf "${TEMPLATE_DIR}"; mkdir -p "${TEMPLATE_DIR}"
+          unzip -q templates.tpz -d unpacked
+          mv unpacked/templates/* "${TEMPLATE_DIR}/"
+          rm -rf unpacked templates.tpz
+          ls "${TEMPLATE_DIR}" | head
+
+      - name: 把模板放到 Godot 找得到的位置
+        run: |
+          set -euo pipefail
+          DEST="$HOME/.local/share/godot/export_templates/4.7.stable"
+          mkdir -p "$DEST"
+          cp -f "${TEMPLATE_DIR}"/* "$DEST/"
+          ls "$DEST" | head
+
+      - name: 导入资源（Web 导出前必需）
+        run: ./"${GODOT_BIN}" --headless --path . --import
+
+      - name: 导出 Web 构建
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          ./"${GODOT_BIN}" --headless --path . --export-release "Web" "$PWD/build/index.html"
+          ls -la build
+          test -f build/index.html
+          test -f build/index.pck
+
+      - uses: actions/configure-pages@v6
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build
+
+  deploy:
+    name: deploy
+    needs: build
+    # PR 只验证构建；只有 zh-cn 的 push 与手动触发才真发布。
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
