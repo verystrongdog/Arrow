@@ -1,0 +1,114 @@
+name: Build · Windows
+
+# 把 zh-cn 分支导出成一个能直接双击运行的 Windows 版编辑器（Arrow.exe）。
+#
+# 为什么要这个：官方发行版（Arrow-v3.1.0-win.64）是上游 mhgolkar/Arrow 的构建，
+# 里面**没有**这个分支的简体中文界面，也没有后来加的东西（拖线弹选单、乱码修复、
+# 把 <em>@</em>… 之类）。想用自己这份，就得自己构建一个 —— 这里就是干这个的。
+#
+# 产物：GitHub Actions 的 artifact（需要登录才能下）+ 一个固定 tag 的 Release 附件
+# （https://github.com/verystrongdog/Arrow/releases/tag/zh-cn-latest），
+# 后者是公开链接，直接在 Windows 上解压双击即可。
+#
+# 导出模板走 actions/cache：首次约 1.2GB，之后几秒。
+
+on:
+  push:
+    branches: ['zh-cn']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7-stable
+  GODOT_BIN: Godot_v4.7-stable_linux.x86_64
+  TEMPLATE_DIR: ${{ github.workspace }}/.godot-templates
+
+jobs:
+  build:
+    name: export (windows x86_64)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 缓存导出模板
+        id: template-cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.TEMPLATE_DIR }}
+          key: godot-export-templates-${{ env.GODOT_VERSION }}
+
+      - name: 装 Godot headless
+        run: |
+          set -euo pipefail
+          curl -sSL --retry 3 -o godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/${GODOT_BIN}.zip"
+          unzip -q godot.zip
+          chmod +x "${GODOT_BIN}"
+          ./"${GODOT_BIN}" --version
+
+      - name: 装导出模板
+        if: steps.template-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -sSL --retry 3 -o templates.tpz \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          rm -rf "${TEMPLATE_DIR}"; mkdir -p "${TEMPLATE_DIR}"
+          unzip -q templates.tpz -d unpacked
+          mv unpacked/templates/* "${TEMPLATE_DIR}/"
+          rm -rf unpacked templates.tpz
+
+      - name: 把模板放到 Godot 找得到的位置
+        run: |
+          set -euo pipefail
+          DEST="$HOME/.local/share/godot/export_templates/4.7.stable"
+          mkdir -p "$DEST"
+          cp -f "${TEMPLATE_DIR}"/* "$DEST/"
+          ls "$DEST" | grep -i windows
+
+      - name: 导入资源
+        run: ./"${GODOT_BIN}" --headless --path . --import
+
+      - name: 导出 Windows 版
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          ./"${GODOT_BIN}" --headless --path . --export-release "Windows" "$PWD/build/Arrow.exe"
+          ls -la build
+          test -f build/Arrow.exe
+
+      - name: 打包
+        run: |
+          set -euo pipefail
+          cd build
+          cp ../license ../copyright .
+          zip -q -r "../Arrow-zh-cn-win.64.zip" .
+          cd ..
+          ls -la Arrow-zh-cn-win.64.zip
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Arrow-zh-cn-win.64
+          path: Arrow-zh-cn-win.64.zip
+
+      - name: 更新 Release 附件（固定 tag：zh-cn-latest）
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: zh-cn-latest
+          name: Arrow 简体中文 · 最新构建
+          body: |
+            由 GitHub Actions 从 `zh-cn` 分支自动构建的 Windows 版：
+
+            * 简体中文界面（可在偏好设置里切回英文）
+            * 拖线到空白处会弹出节点类型选单（不再默认插对话）
+            * 自动修掉「UTF-8 被按 Latin-1 解码」的乱码
+              （粘贴时、导入工程时、以及菜单「修复乱码」一键修旧稿）
+
+            下载 zip 解压后双击 `Arrow.exe` 即可。构建来源见 Actions 页。
+          files: Arrow-zh-cn-win.64.zip
+          fail_on_unmatched_files: true

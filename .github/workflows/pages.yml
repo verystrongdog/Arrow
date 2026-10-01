@@ -46,7 +46,7 @@ jobs:
 
       - name: 缓存导出模板
         id: template-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ env.TEMPLATE_DIR }}
           key: godot-export-templates-${{ env.GODOT_VERSION }}
