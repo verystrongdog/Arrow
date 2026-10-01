@@ -1383,6 +1383,9 @@ class Mind :
 		var the_resource = lookup_resource(resource_uid, validated_field, false) # duplicate = false ...
 		# ... so we can directly update the resource 
 		if the_resource is Dictionary:
+			# 从剪贴板/中间程序带进来的"UTF-8 被按 Latin-1 解码"的乱码，在这里就地修掉：
+			# 检查器所有字段最终都经过 update_resource，所以粘到哪一格都能兜住。
+			modification = Helpers.Utils.recursively_repair_mojibake(modification)
 			var the_resource_old_name = the_resource.name if the_resource.has("name") else null
 			# handing special command/parameters (_use, _as_entry, etc.)
 			if modification.has("data"): # that come with `data` field.
@@ -2386,6 +2389,36 @@ class Mind :
 			print_debug("Unexpected Behavior! Calling register_and_save_project with wrong data. ", [project_title, project_filename] )
 		pass
 	
+	# 把整个工程里"UTF-8 被按 Latin-1 解码"造成的乱码一次性修回来。
+	# 用法：应用菜单 → Fix Mojibake。可撤销（走 history 检查点）。
+	func repair_project_mojibake() -> void:
+		if _PROJECT is Dictionary == false || _PROJECT.has("resources") == false:
+			show_error("Invalid Operation!", "NO_OPEN_PROJECT_TO_REPAIR")
+			return
+		var repairs = Helpers.Utils.count_repairs_recursive(_PROJECT)
+		if repairs <= 0:
+			Notifier.call_deferred(
+				"show_notification",
+				"Nothing to fix",
+				"MOJIBAKE_REPAIR_NOTHING",
+				[], Settings.INFO_COLOR
+			)
+			return
+		history_check_point()
+		# 整份工程都过一遍（标题、作者信息这类字符串也一起修）
+		_PROJECT = Helpers.Utils.recursively_repair_mojibake(_PROJECT)
+		# 重画当前场景（顺带刷新检查器），让修好的文字立刻可见
+		reset_project_title(null, true)
+		load_scene(_CURRENT_OPEN_SCENE_ID)
+		reset_project_save_status(false)
+		Notifier.call_deferred(
+			"show_notification",
+			"Fixed %s strings" % repairs,
+			"MOJIBAKE_REPAIR_DONE",
+			[], Settings.PEACE_COLOR
+		)
+		pass
+	
 	func save_project(try_close_project:bool = false, try_quit_app:bool = false) -> void:
 		if _SNAPSHOT_INDEX_OF_PREVIEW < 0 :
 			if ProMan.is_project_listed() == false:
@@ -2580,6 +2613,11 @@ class Mind :
 		# project manager will return `null` if anything goes wrong
 		if importing_data is Dictionary:
 			print_debug("valid project file browsed: ", filename)
+			# 导入的文件本身可能就带着"UTF-8 被按 Latin-1 解码"的乱码，顺手修一下
+			var imported_repairs = Helpers.Utils.count_repairs_recursive(importing_data)
+			if imported_repairs > 0:
+				importing_data = Helpers.Utils.recursively_repair_mojibake(importing_data)
+				print_debug("imported project had %s mojibake string(s); repaired." % imported_repairs)
 			var pure_filename = filename.replacen(".json", "").replacen(Settings.PROJECT_FILE_EXTENSION, "")
 			var target_registered_uid_to_save_into = ProMan.register_project(importing_data.title, pure_filename, false)
 			ProMan.save_project_into(target_registered_uid_to_save_into, importing_data, false, (Settings.USE_DEPRECATED_BIN_SAVE != true))

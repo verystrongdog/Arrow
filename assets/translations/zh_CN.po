@@ -751,6 +751,9 @@ msgstr "取消置顶"
 msgid "Refresh"
 msgstr "刷新"
 
+msgid "Fix Mojibake"
+msgstr "修复乱码（UTF-8 被按 Latin-1 解码）"
+
 msgid "About"
 msgstr "关于"
 

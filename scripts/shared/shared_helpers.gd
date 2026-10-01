@@ -515,6 +515,101 @@ class Utils:
 		var passes = text.matchn(filter) if ci else text.match(filter)
 		return ( passes if reverse == false else (! passes ) )
 	
+	# ---------------------------------------------------------------- 乱码修复
+	# 症状：UTF-8 的中文被误按 Latin-1 / Windows-1252 解码，例如
+	#   「一切可感现象…」 → 「ä¸\u0080å\u0088‡å\u008f¯æ\u0084\u009f…」
+	# 成因：文字在剪贴板或某个中间程序里，UTF-8 字节被当单字节字符读了 ——
+	#   每个字节变成 U+0000–U+00FF 里的一个字符。把每个字符的码点当回一个字节、
+	#   再按 UTF-8 解码，就是原文。
+	# 下面这些函数只修"看起来确实坏了"的字符串，正常文字一律原样返回。
+	
+	const MOJIBAKE_SUSPECT_CHARS = "ÃÂÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
+	# Windows-1252 把 0x80–0x9F 映射成了可见字符（浏览器常见），要能还原回字节
+	const CP1252_CHARS = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"
+	const CP1252_BYTES = [0x80, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C,
+		0x8E, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9E, 0x9F]
+	
+	static func _has_cjk(text: String) -> bool:
+		for i in range(0, text.length()):
+			var code = text.unicode_at(i)
+			if (
+				(code >= 0x3000 && code <= 0x30FF) || # CJK 标点与假名
+				(code >= 0x3400 && code <= 0x4DBF) || # 扩展 A
+				(code >= 0x4E00 && code <= 0x9FFF) || # 基本区
+				(code >= 0xF900 && code <= 0xFAFF) || # 兼容表意
+				(code >= 0xFF00 && code <= 0xFF60)    # 全角
+			):
+				return true
+		return false
+	
+	# 粗判：有 Latin-1 高位字符、却一个中日韩字符都没有 —— 正常中文文本不会这样
+	static func looks_like_mojibake(text: String) -> bool:
+		if text.length() == 0 || _has_cjk(text):
+			return false
+		for i in range(0, text.length()):
+			if MOJIBAKE_SUSPECT_CHARS.contains(text[i]):
+				return true
+		return false
+	
+	static func _mojibake_to_bytes(text: String) -> PackedByteArray:
+		var bytes := PackedByteArray()
+		for i in range(0, text.length()):
+			var code = text.unicode_at(i)
+			if code <= 0xFF:
+				bytes.push_back(code)
+			else:
+				var mapped = CP1252_CHARS.find(text[i])
+				if mapped < 0:
+					return PackedByteArray() # 有还原不了的字符（不属于 latin-1/cp1252）
+				bytes.push_back(CP1252_BYTES[mapped])
+		return bytes
+	
+	# 修得好就返回修好的，修不好就原样返回
+	static func repair_mojibake(text: String) -> String:
+		if looks_like_mojibake(text) == false:
+			return text
+		var bytes = _mojibake_to_bytes(text)
+		if bytes.size() == 0:
+			return text
+		var fixed = bytes.get_string_from_utf8()
+		if fixed.length() == 0:
+			return text
+		# 只有还原结果"更像人话"（出现中日韩字符）才采用，避免误伤正常西文
+		return (fixed if _has_cjk(fixed) else text)
+	
+	# 递归修 Dictionary / Array / String（连键一起修）
+	static func recursively_repair_mojibake(original):
+		if original is String:
+			return repair_mojibake(original)
+		elif original is Array:
+			var revised = []
+			for item in original:
+				revised.push_back( recursively_repair_mojibake(item) )
+			return revised
+		elif original is Dictionary:
+			var revised = {}
+			for key in original:
+				var fixed_key = (repair_mojibake(key) if key is String else key)
+				revised[fixed_key] = recursively_repair_mojibake(original[key])
+			return revised
+		return original
+	
+	# 数一数这次深修到底改了多少字符串（好给用户一个数字）
+	static func count_repairs_recursive(original) -> int:
+		var count = 0
+		if original is String:
+			if repair_mojibake(original) != original:
+				count += 1
+		elif original is Array:
+			for item in original:
+				count += count_repairs_recursive(item)
+		elif original is Dictionary:
+			for key in original:
+				if key is String && repair_mojibake(key) != key:
+					count += 1
+				count += count_repairs_recursive(original[key])
+		return count
+	
 	static func find_focal(node: Control):
 		for c in range(node.get_child_count() -1, -1, -1):
 			var child = node.get_child(c)

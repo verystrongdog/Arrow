@@ -18,6 +18,8 @@ var _MENU_ITEMS = [
 	"ALWAYS_ON_TOP",
 	"REFRESH",
 	null,
+	"FIX_MOJIBAKE",
+	null,
 	"ABOUT",
 	null,
 	"CLEAR",
@@ -31,6 +33,8 @@ var _MENU_ITEMS_DATA = [
 	{ "text": "Fullscreen (F11)", "text_toggled": "Exit Fullscreen (F11)" },
 	{ "text": "Stay Above", "text_toggled": "Leave Above", "html5": false },
 	{ "text": "Refresh", "html5": true },
+	null,
+	{ "text": "Fix Mojibake" },
 	null,
 	{ "text": "About" },
 	null,
@@ -116,6 +120,8 @@ func _on_self_popup_item_id_pressed(id:int) -> void:
 			Main.UI.call_deferred("toggle_always_on_top")
 		_ID.REFRESH:
 			Html5Helpers.Utils.refresh_window()
+		_ID.FIX_MOJIBAKE:
+			Main.Mind.call_deferred("repair_project_mojibake")
 		_ID.ABOUT:
 			Main.call_deferred("toggle_about")
 		_ID.QUIT:
