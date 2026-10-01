@@ -88,6 +88,10 @@ jobs:
           set -euo pipefail
           mkdir -p build
           ./"${GODOT_BIN}" --headless --path . --export-release "Web" "$PWD/build/index.html"
+          # 把这次构建的 commit 写进标题：一眼就能确认浏览器加载的是哪一版
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          sed -i "s|<title>Arrow</title>|<title>Arrow · ${SHORT_SHA}</title>|" build/index.html
+          grep -o "<title>[^<]*</title>" build/index.html
           ls -la build
           test -f build/index.html
           test -f build/index.pck
