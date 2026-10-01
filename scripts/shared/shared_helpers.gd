@@ -542,6 +542,18 @@ class Utils:
 				return true
 		return false
 	
+	# 还原之后算不算"人话"：中日韩字符，或者符号/emoji 这些正常西文里不会出现的字
+	static func _has_meaningful_non_latin(text: String) -> bool:
+		for i in range(0, text.length()):
+			var code = text.unicode_at(i)
+			if (
+				(code >= 0x2190 && code <= 0x2BFF) || # 箭头 / 数学符号 / 各种符号
+				(code >= 0x1F000 && code <= 0x1FAFF) || # emoji
+				(code >= 0x2600 && code <= 0x27BF)     # 杂项符号与装饰
+			):
+				return true
+		return _has_cjk(text)
+	
 	# 粗判：有 Latin-1 高位字符、却一个中日韩字符都没有 —— 正常中文文本不会这样
 	static func looks_like_mojibake(text: String) -> bool:
 		if text.length() == 0 || _has_cjk(text):
@@ -564,18 +576,43 @@ class Utils:
 				bytes.push_back(CP1252_BYTES[mapped])
 		return bytes
 	
-	# 修得好就返回修好的，修不好就原样返回
-	static func repair_mojibake(text: String) -> String:
-		if looks_like_mojibake(text) == false:
-			return text
+	# 还原一轮（把每个字符的码点当回一个字节，再按 UTF-8 解码）
+	static func _decode_mojibake_once(text: String) -> String:
 		var bytes = _mojibake_to_bytes(text)
 		if bytes.size() == 0:
-			return text
-		var fixed = bytes.get_string_from_utf8()
-		if fixed.length() == 0:
-			return text
-		# 只有还原结果"更像人话"（出现中日韩字符）才采用，避免误伤正常西文
-		return (fixed if _has_cjk(fixed) else text)
+			return ""
+		return bytes.get_string_from_utf8()
+	
+	# 有些管道会连着坏好几轮（乱码再被乱码一次 → 「ä¸」 变成 「Ã¥Â¸」），
+	# 所以反复还原直到像人话为止，最多 MOJIBAKE_MAX_ROUNDS 轮；修不出人话就原样返回。
+	const MOJIBAKE_MAX_ROUNDS = 4
+	
+	static func repair_mojibake(text: String) -> String:
+		var current = text
+		for round in range(0, MOJIBAKE_MAX_ROUNDS):
+			if looks_like_mojibake(current) == false:
+				break
+			var fixed = _decode_mojibake_once(current)
+			if fixed.length() == 0 || fixed == current:
+				break
+			current = fixed
+			if _has_meaningful_non_latin(current):
+				return current
+		return (current if _has_meaningful_non_latin(current) else text)
+	
+	# 还原了几轮（给日志/测试用）
+	static func mojibake_rounds_needed(text: String) -> int:
+		var current = text
+		for round in range(0, MOJIBAKE_MAX_ROUNDS):
+			if looks_like_mojibake(current) == false:
+				return round
+			var fixed = _decode_mojibake_once(current)
+			if fixed.length() == 0 || fixed == current:
+				return round
+			current = fixed
+			if _has_meaningful_non_latin(current):
+				return round + 1
+		return MOJIBAKE_MAX_ROUNDS
 	
 	# 递归修 Dictionary / Array / String（连键一起修）
 	static func recursively_repair_mojibake(original):
